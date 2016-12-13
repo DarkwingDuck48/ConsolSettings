@@ -1,16 +1,26 @@
 import sys
+import os
+import json
 from PyQt5.QtWidgets import (QMainWindow, QPushButton, QApplication, QWidget, QGridLayout, QAction,
                              qApp, QFileDialog, QComboBox, QLineEdit, QLabel, QTableWidget, QTableWidgetItem)
 
 
 class Table(QWidget):
-    def __init__(self, entity, parent=None):
+    def __init__(self, entity=None, parent=None):
         super().__init__(parent)
         self.entity = entity
         self.setWindowTitle("Consolidation settings for {}".format(self.entity))
-        self.setGeometry(300, 300, 350, 200)
+        self.setGeometry(300, 300, 350, 240)
+        # Consol Combobox
+        self.consolmetod = ['CONSOLIDATED', 'HOLDING', 'DISPOSED', 'DISPOSEDDY', 'NEWSUBS', 'DISCONTINUED', 'AHS',
+                            'NOTCONSOL']
+        self.consolmethod_box = QComboBox()
+        self.consolmethod_box.addItems(self.consolmetod)
+        self.but_confirm = QPushButton("Confirm")
+        self.but_clear = QPushButton("Clear")
+        # Table
         self.table = QTableWidget(self)
-        self.table_layout =QGridLayout()
+        self.table_layout = QGridLayout()
         self.setLayout(self.table_layout)
         self.table.setRowCount(5)
         self.table.setColumnCount(2)
@@ -22,15 +32,25 @@ class Table(QWidget):
         for i in range(0, len(self.consolsettings)):
             self.table.setItem(i, 0, QTableWidgetItem(self.consolsettings[i]))
         self.table.setRowHidden(4, True)
-        self.table_layout.addWidget(self.table)
+        self.table.setCellWidget(3, 1, self.consolmethod_box)
+
+        self.table_layout.addWidget(self.table, 0, 0, 1, 0)
+        self.table_layout.addWidget(self.but_clear, 1, 0)
+        self.table_layout.addWidget(self.but_confirm, 1, 1)
+        self.consolmethod_box.currentIndexChanged.connect(self.method_check)
+
+    def method_check(self):
+        current_text = self.consolmethod_box.itemText(self.consolmethod_box.currentIndex())
+        if current_text == 'DISPOSEDDY':
+            self.table.setRowHidden(4, False)
+        else:
+            self.table.setRowHidden(4, True)
+
+
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
-
         # Базовые массивы
-        self.consolmetod = ['CONSOLIDATED', 'HOLDING', 'DISPOSED', 'DISPOSEDDY', 'NEWSUBS', 'DISCONTINUED', 'AHS',
-                            'NOTCONSOL']
-
         self.month = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
         self.scenario = ["ACT", "BDG", "TAX"]
         self.years = [year for year in range(2012, 2031)]
@@ -44,50 +64,21 @@ class MainWindow(QMainWindow):
         self.mainwidget.setLayout(self.layout_grid)
 
         # Комбобоксы
-        self.consolmethod_box = QComboBox()
-        self.consolmethod_box.addItems(self.consolmetod)
         self.scenario_box = QComboBox()
         self.scenario_box.addItems(self.scenario)
         self.Entity = QLineEdit()
-        '''
-        # таблица
-        self.table = QTableWidget()
-        self.table.setRowCount(2)
-        self.table.setColumnCount(10)
-        self.table.setColumnWidth(8, 120)
-        self.table.setColumnHidden(9, True)
 
-        # Имена колонок
-        self.table.setHorizontalHeaderItem(0, QTableWidgetItem("Scenario"))
-        self.table.setHorizontalHeaderItem(1, QTableWidgetItem("Month/year start"))
-        self.table.setHorizontalHeaderItem(2, QTableWidgetItem("Month/year end"))
-        self.table.setHorizontalHeaderItem(3, QTableWidgetItem("Entity"))
-        self.table.setHorizontalHeaderItem(4, QTableWidgetItem("ICP"))
-        self.table.setHorizontalHeaderItem(5, QTableWidgetItem("[Active]"))
-        self.table.setHorizontalHeaderItem(6, QTableWidgetItem('[PCON]'))
-        self.table.setHorizontalHeaderItem(7, QTableWidgetItem('[POWN]'))
-        self.table.setHorizontalHeaderItem(8, QTableWidgetItem('[Method]'))
-        self.table.setHorizontalHeaderItem(9, QTableWidgetItem('[Consol1]'))
-
-        # Заполнение первой строки таблицы
-        self.table.setCellWidget(0, 8, self.consolmethod_box)
-        self.table.setCellWidget(0, 0, self.scenario_box)
-        '''
-
-        self.table = Table(self.Entity.text())
         self.button = QPushButton("Show table")
-        self.button.clicked.connect(self.table.show)
-        self.layout_grid.addWidget(self.button, 0, 1)
-        self.layout_grid.addWidget(self.Entity, 0, 0)
+        self.table = ""
+        self.button.clicked.connect(self.generatetable)
+        self.layout_grid.addWidget(self.scenario_box,0,0)
+        self.layout_grid.addWidget(self.Entity, 0, 1)
+        self.layout_grid.addWidget(self.button, 0, 2)
 
-        self.consolmethod_box.currentIndexChanged.connect(self.method_check)
 
-    def method_check(self):
-        current_text = self.consolmethod_box.itemText(self.consolmethod_box.currentIndex())
-        if current_text == 'DISPOSEDDY':
-            self.table.setColumnHidden(9, False)
-        else:
-            self.table.setColumnHidden(9, True)
+    def generatetable(self):
+        self.table = Table(entity=self.Entity.text())
+        self.table.show()
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
