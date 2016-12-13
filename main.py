@@ -4,22 +4,24 @@ from PyQt5.QtWidgets import (QMainWindow, QPushButton, QApplication, QWidget, QG
 
 
 class Table(QWidget):
-    def __init__(self, parent=None):
+    def __init__(self, entity, parent=None):
         super().__init__(parent)
-        self.setWindowTitle("Consolidation settings")
+        self.entity = entity
+        self.setWindowTitle("Consolidation settings for {}".format(self.entity))
         self.setGeometry(300, 300, 350, 200)
         self.table = QTableWidget(self)
         self.table_layout =QGridLayout()
         self.setLayout(self.table_layout)
         self.table.setRowCount(5)
         self.table.setColumnCount(2)
-        self.table.setColumnWidth(0,150)
-        self.table.setColumnWidth(1,150)
+        self.table.setColumnWidth(0, 150)
+        self.table.setColumnWidth(1, 150)
         self.table.setHorizontalHeaderItem(0, QTableWidgetItem("ConsolSettings"))
         self.table.setHorizontalHeaderItem(1, QTableWidgetItem("Value"))
         self.consolsettings = ['[Active]', '[PCON]', '[POWN]', '[Method]', '[Consol1]']
-        for i in range(0,len(self.consolsettings)):
+        for i in range(0, len(self.consolsettings)):
             self.table.setItem(i, 0, QTableWidgetItem(self.consolsettings[i]))
+        self.table.setRowHidden(4, True)
         self.table_layout.addWidget(self.table)
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -46,6 +48,7 @@ class MainWindow(QMainWindow):
         self.consolmethod_box.addItems(self.consolmetod)
         self.scenario_box = QComboBox()
         self.scenario_box.addItems(self.scenario)
+        self.Entity = QLineEdit()
         '''
         # таблица
         self.table = QTableWidget()
@@ -70,10 +73,12 @@ class MainWindow(QMainWindow):
         self.table.setCellWidget(0, 8, self.consolmethod_box)
         self.table.setCellWidget(0, 0, self.scenario_box)
         '''
-        self.table = Table()
+
+        self.table = Table(self.Entity.text())
         self.button = QPushButton("Show table")
         self.button.clicked.connect(self.table.show)
-        self.layout_grid.addWidget(self.button)
+        self.layout_grid.addWidget(self.button, 0, 1)
+        self.layout_grid.addWidget(self.Entity, 0, 0)
 
         self.consolmethod_box.currentIndexChanged.connect(self.method_check)
 
