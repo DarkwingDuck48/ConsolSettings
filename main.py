@@ -24,6 +24,17 @@ class MainWindow(QMainWindow):
         self.layout_grid = QGridLayout()
         self.mainwidget.setLayout(self.layout_grid)
 
+        exitAction = QAction('&Exit', self)
+        exitAction.setShortcut('Ctrl+Q')
+        exitAction.setStatusTip('Exit application')
+        exitAction.triggered.connect(qApp.quit)
+
+        self.statusBar()
+
+        self.menubar = self.menuBar()
+        fileMenu = self.menubar.addMenu('&File')
+        fileMenu.addAction(exitAction)
+
         # Комбобоксы
         self.scenario_box = QComboBox()
         self.scenario_box.addItems(self.scenario)
