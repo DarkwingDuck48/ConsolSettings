@@ -1,12 +1,13 @@
 import sys
 from PyQt5.QtWidgets import QWidget,QPushButton,QLineEdit,QComboBox,QHBoxLayout,QApplication
-
+from Table import Table
 
 class WidgetLine(QWidget):
-    def __init__(self, parent=None):
+    def __init__(self, rows, parent=None):
         super().__init__(parent)
         self.layout_line = QHBoxLayout()
         self.setLayout(self.layout_line)
+        self.rows_count = rows
 
         # Массивы
         self.scenario = ["ACT", "BDG", "TAX"]
@@ -18,11 +19,14 @@ class WidgetLine(QWidget):
         # Combobox
         self.scenario_box = QComboBox()
         self.scenario_box.addItems(self.scenario)
-        self.years_box = QComboBox()
-        self.years_box.addItems(self.years)
-        self.month_box = QComboBox()
-        for key in self.month:
-            self.month_box.addItem(key)
+        self.years_box_start = QComboBox()
+        self.years_box_start.addItems(self.years)
+        self.month_box_start = QComboBox()
+        self.month_box_start.addItems(self.month)
+        self.years_box_end = QComboBox()
+        self.years_box_end.addItems(self.years)
+        self.month_box_end = QComboBox()
+        self.month_box_end.addItems(self.month)
         # LineEdit
         self.Entity = QLineEdit()
         self.ICP = QLineEdit()
@@ -31,14 +35,23 @@ class WidgetLine(QWidget):
         self.show_table_button = QPushButton('ConsolSettings')
         # Линия виджета
         self.layout_line.addWidget(self.scenario_box)
-        self.layout_line.addWidget(self.years_box)
-        self.layout_line.addWidget(self.month_box)
+        self.layout_line.addWidget(self.years_box_start)
+        self.layout_line.addWidget(self.month_box_start)
         self.layout_line.addWidget(self.Entity)
         self.layout_line.addWidget(self.ICP)
+        self.layout_line.addWidget(self.years_box_end)
+        self.layout_line.addWidget(self.month_box_end)
         self.layout_line.addWidget(self.show_table_button)
+
+        self.show_table_button.clicked.connect(self.generatetable)
+
+    def generatetable(self):
+        self.table = Table(entity=self.Entity.text())
+        self.table.show()
+
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
-    window = WidgetLine()
+    window = WidgetLine(0)
     window.show()
     sys.exit(app.exec_())

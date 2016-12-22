@@ -19,7 +19,6 @@ class MainWindow(QMainWindow):
         self.setCentralWidget(self.mainwidget)
         self.layout_grid = QGridLayout()
         self.mainwidget.setLayout(self.layout_grid)
-
         exitAction = QAction('&Exit', self)
         exitAction.setShortcut('Ctrl+Q')
         exitAction.setStatusTip('Exit application')
@@ -34,8 +33,10 @@ class MainWindow(QMainWindow):
 
         self.menubar = self.menuBar()
         fileMenu = self.menubar.addMenu('&File')
-        fileMenu.addAction(exitAction)
         fileMenu.addAction(addline)
+        fileMenu.addSeparator()
+        fileMenu.addAction(exitAction)
+        self.rows = 0
         self.widget = ''
         self.table = ""
     '''

@@ -32,6 +32,7 @@ class Table(QWidget):
         self.table_layout.addWidget(self.table, 0, 0, 1, 0)
         self.table_layout.addWidget(self.but_clear, 1, 0)
         self.table_layout.addWidget(self.but_confirm, 1, 1)
+        self.but_clear.clicked.connect(self.cleartable)
         self.consolmethod_box.currentIndexChanged.connect(self.method_check)
 
     def method_check(self):
@@ -40,3 +41,8 @@ class Table(QWidget):
             self.table.setRowHidden(4, False)
         else:
             self.table.setRowHidden(4, True)
+
+    def cleartable(self):
+        rows = [i for i in range(0, self.table.rowCount()) if i != 3]
+        for row in rows:
+            self.table.setItem(row, 1, QTableWidgetItem("0"))
