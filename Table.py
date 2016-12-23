@@ -1,4 +1,7 @@
-from PyQt5.QtWidgets import QWidget,QPushButton,QComboBox,QGridLayout,QTableWidget,QTableWidgetItem
+import json
+import sys
+from PyQt5.QtWidgets import QWidget,QPushButton,QComboBox,QGridLayout,QTableWidget,QTableWidgetItem,QApplication
+
 
 class Table(QWidget):
     def __init__(self, entity=None, parent=None):
@@ -13,6 +16,8 @@ class Table(QWidget):
         self.consolmethod_box.addItems(self.consolmetod)
         self.but_confirm = QPushButton("Confirm")
         self.but_clear = QPushButton("Clear")
+        # Parametrs set 0 if init, else set old
+        self.settings = {'Active': '', "POwn": '', 'PCon': '', "Method": '', "Consol1": ""}
         # Table
         self.table = QTableWidget(self)
         self.table_layout = QGridLayout()
@@ -32,8 +37,10 @@ class Table(QWidget):
         self.table_layout.addWidget(self.table, 0, 0, 1, 0)
         self.table_layout.addWidget(self.but_clear, 1, 0)
         self.table_layout.addWidget(self.but_confirm, 1, 1)
+
         self.but_clear.clicked.connect(self.cleartable)
         self.consolmethod_box.currentIndexChanged.connect(self.method_check)
+        self.but_confirm.clicked.connect(self.writetable)
 
     def method_check(self):
         current_text = self.consolmethod_box.itemText(self.consolmethod_box.currentIndex())
@@ -46,3 +53,17 @@ class Table(QWidget):
         rows = [i for i in range(0, self.table.rowCount()) if i != 3]
         for row in rows:
             self.table.setItem(row, 1, QTableWidgetItem("0"))
+
+    def writetable(self):
+        self.settings["Active"] = self.table.item(0, 1).text()
+        self.settings["Pcon"] = self.table.item(1, 1).text()
+        self.settings["POwn"] = self.table.item(2, 1).text()
+        self.settings["Method"] = self.consolmethod_box.itemText(self.consolmethod_box.currentIndex())
+        if not self.table.isRowHidden(4):
+            self.settings["Consol1"] = self.table.item(4, 1).text()
+
+if __name__ == '__main__':
+    app = QApplication(sys.argv)
+    window = Table()
+    window.show()
+    sys.exit(app.exec_())

@@ -3,11 +3,11 @@ from PyQt5.QtWidgets import QWidget,QPushButton,QLineEdit,QComboBox,QHBoxLayout,
 from Table import Table
 
 class WidgetLine(QWidget):
-    def __init__(self, rows, parent=None):
+    def __init__(self, parent=None):
         super().__init__(parent)
         self.layout_line = QHBoxLayout()
         self.setLayout(self.layout_line)
-        self.rows_count = rows
+        #self.rows_count = rows
 
         # Массивы
         self.scenario = ["ACT", "BDG", "TAX"]
@@ -33,6 +33,7 @@ class WidgetLine(QWidget):
 
         # button
         self.show_table_button = QPushButton('ConsolSettings')
+        self.button_test = QPushButton('TestPrint')
         # Линия виджета
         self.layout_line.addWidget(self.scenario_box)
         self.layout_line.addWidget(self.years_box_start)
@@ -42,16 +43,21 @@ class WidgetLine(QWidget):
         self.layout_line.addWidget(self.years_box_end)
         self.layout_line.addWidget(self.month_box_end)
         self.layout_line.addWidget(self.show_table_button)
+        self.layout_line.addWidget(self.button_test)
 
         self.show_table_button.clicked.connect(self.generatetable)
+        self.button_test.clicked.connect(self.test_print)
 
     def generatetable(self):
         self.table = Table(entity=self.Entity.text())
         self.table.show()
 
+    def test_print(self):
+        print(self.Entity.text())
+        print(self.ICP.text())
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
-    window = WidgetLine(0)
+    window = WidgetLine()
     window.show()
     sys.exit(app.exec_())
