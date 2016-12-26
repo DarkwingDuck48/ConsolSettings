@@ -4,9 +4,13 @@ from PyQt5.QtWidgets import QWidget,QPushButton,QComboBox,QGridLayout,QTableWidg
 
 
 class Table(QWidget):
-    def __init__(self, entity=None, parent=None):
+    def __init__(self, scenario=None, period_start=None, entity=None, icp=None, period_end=None, parent=None):
         super().__init__(parent)
+        self.scenario = scenario
+        self.period_start = period_start
+        self.period_end = period_end
         self.entity = entity
+        self.icp = icp
         self.setWindowTitle("Consolidation settings for {}".format(self.entity))
         self.setGeometry(300, 300, 350, 240)
         # Consol Combobox
