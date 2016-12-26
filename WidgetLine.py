@@ -33,7 +33,7 @@ class WidgetLine(QWidget):
 
         # button
         self.show_table_button = QPushButton('ConsolSettings')
-        self.button_test = QPushButton('TestPrint')
+        self.button_delete = QPushButton('Del')
         # Линия виджета
         self.layout_line.addWidget(self.scenario_box)
         self.layout_line.addWidget(self.years_box_start)
@@ -43,18 +43,14 @@ class WidgetLine(QWidget):
         self.layout_line.addWidget(self.years_box_end)
         self.layout_line.addWidget(self.month_box_end)
         self.layout_line.addWidget(self.show_table_button)
-        self.layout_line.addWidget(self.button_test)
+        self.layout_line.addWidget(self.button_delete)
 
         self.show_table_button.clicked.connect(self.generatetable)
-        self.button_test.clicked.connect(self.test_print)
+        self.button_delete.clicked.connect(self.close)
 
     def generatetable(self):
         self.table = Table(entity=self.Entity.text())
         self.table.show()
-
-    def test_print(self):
-        print(self.Entity.text())
-        print(self.ICP.text())
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
