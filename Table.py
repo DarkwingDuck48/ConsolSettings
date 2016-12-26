@@ -4,15 +4,20 @@ from PyQt5.QtWidgets import QWidget,QPushButton,QComboBox,QGridLayout,QTableWidg
 
 
 class Table(QWidget):
-    def __init__(self, scenario=None, period_start=None, entity=None, icp=None, period_end=None, parent=None):
+    def __init__(self, scenario=None, year_start=None, month_start=None, entity=None, icp=None,
+                 year_end=None, month_end=None, parent=None):
         super().__init__(parent)
         self.scenario = scenario
-        self.period_start = period_start
-        self.period_end = period_end
+        self.year_start = year_start
+        self.month_start = month_start
+        self.year_end = year_end
+        self.month_end = month_end
         self.entity = entity
         self.icp = icp
         self.setWindowTitle("Consolidation settings for {}".format(self.entity))
         self.setGeometry(300, 300, 350, 240)
+        self.file = open('.\\text.txt', 'w', encoding='utf-8')
+
         # Consol Combobox
         self.consolmetod = ['CONSOLIDATED', 'HOLDING', 'DISPOSED', 'DISPOSEDDY', 'NEWSUBS', 'DISCONTINUED', 'AHS',
                             'NOTCONSOL']
@@ -65,7 +70,6 @@ class Table(QWidget):
         self.settings["Method"] = self.consolmethod_box.itemText(self.consolmethod_box.currentIndex())
         if not self.table.isRowHidden(4):
             self.settings["Consol1"] = self.table.item(4, 1).text()
-
 if __name__ == '__main__':
     app = QApplication(sys.argv)
     window = Table()

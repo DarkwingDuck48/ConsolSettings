@@ -49,7 +49,16 @@ class WidgetLine(QWidget):
         self.button_delete.clicked.connect(self.close)
 
     def generatetable(self):
-        self.table = Table(entity=self.Entity.text())
+        entity = self.Entity.text()
+        icp = self.ICP.text()
+        scenario = self.scenario_box.itemText(self.scenario_box.currentIndex())
+        year_start = self.years_box_start.itemText(self.years_box_start.currentIndex())
+        month_start = self.month_box_start.itemText(self.month_box_start.currentIndex())
+        year_end = self.years_box_end.itemText(self.years_box_end.currentIndex())
+        month_end = self.month_box_end.itemText(self.month_box_end.currentIndex())
+        print(entity, icp, scenario, year_start, month_start, year_end, month_end)
+        self.table = Table(scenario=scenario, year_start=year_start, month_start=month_start, entity=entity,
+                           icp=icp, year_end=year_end, month_end=month_end)
         self.table.show()
 
 if __name__ == '__main__':
